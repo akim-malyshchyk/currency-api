@@ -4,20 +4,26 @@ services:
   web:
     build: .
     container_name: web
-    volumes:
-      - ./src:/src
+    depends_on:
+      - db
+    env_file:
+      - .env
+    command: bash -c "
+      alembic upgrade head &&
+      gunicorn app:factory --bind 0.0.0.0:8000 --worker-class aiohttp.GunicornWebWorker --reload"
     expose:
       - "8000"
-    links:
-      - db
-    restart: on-failure
+    volumes:
+      - ./src:/src
   db:
     image: postgres:latest
     container_name: db
-    restart: always
     environment:
-      POSTGRES_DB: app
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5432:5432"
   nginx:
     image: nginx:latest
     container_name: nginx

@@ -1,5 +1,5 @@
 from aiohttp import web
-from src.core.router import routes
+from core.router import routes
 
 
 async def factory():

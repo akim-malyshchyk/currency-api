@@ -1,4 +1,4 @@
-from src.views import render
+from views import render
 
 async def index(request):  # pylint: disable=unused-argument
     data = "This is root page"
