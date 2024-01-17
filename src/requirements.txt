@@ -1,4 +1,5 @@
 aiohttp==3.9.1
-gunicorn
-aiopg
-psycopg2
+aiopg==1.4.0
+gunicorn==21.2.0
+psycopg2==2.9.9
+pylint==3.0.3
