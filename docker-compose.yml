@@ -1,0 +1,30 @@
+version: "3.1"
+
+services:
+  web:
+    build: .
+    container_name: web
+    volumes:
+      - ./src:/src
+    expose:
+      - "8000"
+    links:
+      - db
+    restart: on-failure
+  db:
+    image: postgres:latest
+    container_name: db
+    restart: always
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_PASSWORD: postgres
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    depends_on:
+      - web
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./src:/src
+      - ./config/nginx:/etc/nginx/conf.d
