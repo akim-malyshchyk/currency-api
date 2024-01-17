@@ -1,0 +1,22 @@
+[project]
+name = "currency-api"
+version = "0.0.1"
+authors = [
+  { name="Akim Malyshchyk", email="akim.malyschik@gmail.com" },
+]
+description = "RESTful async server for getting and storing crypto currency data"
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/akim-malyshchyk/currency-api"
+Issues = "https://github.com/akim-malyshchyk/currency-api/issues"
+
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
