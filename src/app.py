@@ -1,3 +1,4 @@
+import logging
 import os
 from aiohttp import web
 from aiohttp_middlewares import (
@@ -21,5 +22,6 @@ async def factory():
         ),
         https_middleware(),
     ])
+    logging.basicConfig(level=logging.INFO)
     currency_routes(app)
     return app
