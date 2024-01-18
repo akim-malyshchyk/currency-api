@@ -4,6 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from managers.db_manager import DBManager, get_async_session
 from models.currency import Currency
 
+
 class CurrencyDBManager:
     def __init__(self):
         self.db_manager = DBManager()

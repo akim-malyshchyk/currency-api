@@ -42,9 +42,9 @@ class DBManager(metaclass=SingletonDBManager):
             f':{os.getenv("DB_PORT")}',
             f'/{os.getenv("DB_NAME")}'
         ))
-        self.pool_size = 20
-        self.max_overflow = 5
-        self.pool_recycle = 60
+        self.pool_size = int(os.getenv("POOL_SIZE", "20"))
+        self.max_overflow = int(os.getenv("MAX_OVERFLOW", "5"))
+        self.pool_recycle = int(os.getenv("POOL_RECYCLE", "60"))
         self._async_engine = None
         self._async_session = None
 
