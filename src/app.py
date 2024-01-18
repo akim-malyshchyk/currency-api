@@ -1,8 +1,8 @@
 from aiohttp import web
-from core.router import routes
+from routes.currency_router import currency_routes
 
 
 async def factory():
     app = web.Application()
-    routes(app)
+    currency_routes(app)
     return app

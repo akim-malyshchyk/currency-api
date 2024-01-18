@@ -1,9 +1,9 @@
 from aiohttp.web import Application
-from controllers.controller import Controller
+from controllers.currency_controller import CurrencyController
 
 
-def routes(app: Application) -> None:
-    controller = Controller()
+def currency_routes(app: Application) -> None:
+    controller = CurrencyController()
     app.router.add_get('/price/{currency}', controller.get_currency_price)
     app.router.add_get('/history', controller.get_history)
     app.router.add_delete('/price/history', controller.delete_history)

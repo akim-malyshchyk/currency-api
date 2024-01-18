@@ -2,10 +2,10 @@ import os
 import ccxt.async_support as ccxt
 from aiohttp.web import Request, Response
 from managers.currency_db_manager import CurrencyDBManager
-from views import render
+from helpers import render
 
 
-class Controller:
+class CurrencyController:
     def __init__(self):
         self.exchange_config = {
             "enableRateLimit": True,
