@@ -16,7 +16,7 @@ class CurrencyController:
 
     async def get_currency_price(self, request: Request) -> Response:
         currency = request.match_info["currency"]
-        symbol = f"{currency.upper()}/USDT"
+        symbol = f"{currency}/USDT"
         exchange = ccxt.kucoin(self.exchange_config)
         try:
             ticker = await exchange.fetch_ticker(symbol)
