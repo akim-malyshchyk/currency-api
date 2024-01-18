@@ -10,7 +10,7 @@ from alembic import context
 
 from dotenv import load_dotenv
 
-from models.base import Base
+from managers.db_manager import Base
 from models.currency import Currency
 
 # this is the Alembic Config object, which provides

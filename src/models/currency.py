@@ -3,16 +3,34 @@ from sqlalchemy import (
     DateTime,
     Integer,
     Numeric,
-    func,
+    String,
 )
-from models.base import Base
+from managers.db_manager import Base
+from sqlalchemy.sql import expression
+from sqlalchemy.ext.compiler import compiles
+from sqlalchemy.types import DateTime
+
+
+class utcnow(expression.FunctionElement):
+    type = DateTime()
+    inherit_cache = True
+
+
+@compiles(utcnow, 'postgresql')
+def pg_utcnow(element, compiler, **kw):
+    return "TIMEZONE('utc', CURRENT_TIMESTAMP)"
 
 
 class Currency(Base):
     __tablename__ = 'currencies'
     id = Column(Integer, primary_key=True, nullable=False)
-    date_ = Column(DateTime, default=func.now())
-    price = Column(Numeric)
+    currency = Column(String(255), nullable=False)
+    date_ = Column(DateTime, unique=True, server_default=utcnow())
+    price = Column(Numeric(precision=12, scale=5, asdecimal=False), nullable=False)
 
-
-sa_currency = Currency.__table__
+    def to_json(self) -> dict:
+        return {
+            "currency": self.currency,
+            "price": self.price,
+            "timestamp": self.date_.isoformat(timespec="seconds")
+        }
