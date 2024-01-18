@@ -22,7 +22,7 @@ class CurrencyDBManager:
             async with get_async_session() as session:
                 instance = await self._save(session, currency, last_price)
                 data = instance.to_json()
-        except SQLAlchemyError as err:
+        except (SQLAlchemyError, OSError)  as err:
             raise HTTPInternalServerError(text='Error saving currency price') from err
         return data
 
@@ -37,7 +37,7 @@ class CurrencyDBManager:
                 history = await session.scalars(query)
                 data = [currency.to_json() for currency in history]
 
-        except (ValueError, SQLAlchemyError) as err:
+        except (ValueError, SQLAlchemyError, OSError) as err:
             raise HTTPInternalServerError(text='Error getting price history') from err
 
         return data
@@ -48,5 +48,5 @@ class CurrencyDBManager:
                 truncate_statement = text(f'TRUNCATE TABLE {Currency.__tablename__}')
                 await session.execute(truncate_statement)
                 await session.commit()
-        except SQLAlchemyError as err:
+        except (SQLAlchemyError, OSError) as err:
             raise HTTPInternalServerError(text='Error deleting price history') from err

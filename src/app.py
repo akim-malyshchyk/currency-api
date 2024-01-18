@@ -25,3 +25,11 @@ async def factory():
     logging.basicConfig(level=logging.INFO)
     currency_routes(app)
     return app
+
+
+if __name__ == '__main__':
+    web.run_app(
+        factory(),
+        host=os.getenv("API_HOST", "localhost"),
+        port=int(os.getenv("API_PORT", "8000")),
+    )

@@ -1,0 +1,89 @@
+openapi: 3.0.3
+info:
+  title: Currency API - OpenAPI 3.0
+  version: 1.0.0
+
+paths:
+  /price/history:
+    get:
+      tags:
+        - currency
+      summary: Get historical data about prices
+      description: Get historical data about prices
+      parameters:
+        - name: page
+          in: query
+          required: false
+          schema:
+            type: integer
+
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    currency:
+                      type: string
+                      description: currency name
+                      example: ETH
+                    timestamp:
+                      type: string
+                      description: Timestamp price was fetched at
+                      example: "2024-01-18T17:07:58"
+                    price:
+                      type: number
+                      description: The currency price
+                      example: 2484.01
+        '400':
+          description: Invalid page number
+
+    delete:
+      tags:
+        - currency
+      summary: Delete all historical data from the DB
+      description: Delete all historical data from the DB
+      responses:
+        '204':
+          description: Successful operation
+
+  /price/{currency}:
+    get:
+      tags:
+        - currency
+      summary: Get currency price from KuCoin and store in DB
+      description: Get currency price from KuCoin and store in DB
+      parameters:
+        - name: currency
+          in: path
+          description: Currency ticker in upper case
+          required: true
+          schema:
+            type: string
+            default: BTC
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  currency:
+                    type: string
+                    description: currency name
+                    example: BTC
+                  timestamp:
+                    type: string
+                    description: Timestamp price was fetched at
+                    example: "2024-01-18T17:07:58"
+                  price:
+                    type: number
+                    description: The currency price
+                    example: 41765.1
+        '400':
+          description: Invalid currency name
