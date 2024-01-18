@@ -1,6 +1,10 @@
 import os
 import ccxt.async_support as ccxt
-from aiohttp.web import Request, Response
+from aiohttp.web import (
+    HTTPBadRequest,
+    Request,
+    Response,
+)
 from managers.currency_db_manager import CurrencyDBManager
 from helpers import render
 
@@ -21,7 +25,7 @@ class CurrencyController:
         try:
             ticker = await exchange.fetch_ticker(symbol)
         except ccxt.BadSymbol as err:
-            return await render.raw(data=str(err), status=400)
+            raise HTTPBadRequest(text=str(err)) from err
         finally:
             await exchange.close()
 
@@ -35,18 +39,13 @@ class CurrencyController:
 
     async def get_history(self, request: Request) -> Response:
         try:
-            page = int(request.query.get('page', 1))
-        except ValueError:
-            return await render.raw(data="Page number is invalid", status=400)
+            page = int(request.query.get("page", "1"))
+        except ValueError as err:
+            raise HTTPBadRequest(text="Invalid page number") from err
+
         data = await self.currency_manager.get_history(page)
-        return await render.json(
-            data=data,
-            status=200
-        )
+        return await render.json(data, status=200)
 
     async def delete_history(self, request: Request) -> Response:  # pylint: disable=unused-argument
         await self.currency_manager.delete_history()
-        return await render.json(
-            data=None,
-            status=204
-        )
+        return await render.json(data=None, status=204)

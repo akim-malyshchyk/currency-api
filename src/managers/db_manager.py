@@ -2,6 +2,8 @@ import os
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
+from aiohttp.web import HTTPInternalServerError
+from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     AsyncEngine,
@@ -68,8 +70,8 @@ class DBManager(metaclass=SingletonDBManager):
                     pool_pre_ping=True,
                 )
             return self._async_engine
-        except Exception as err:
-            raise DataBaseError(f"Error creating async engine: {err}") from err
+        except SQLAlchemyError as err:
+            raise HTTPInternalServerError(text="Error creating async engine") from err
 
     async def async_session(self) -> AsyncSession:
         return scoped_session(sessionmaker(bind=await self.async_engine(),
