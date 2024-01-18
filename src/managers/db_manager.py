@@ -30,10 +30,6 @@ class SingletonDBManager(type):
         return cls._instances[cls]
 
 
-class DataBaseError(Exception):
-    pass
-
-
 class DBManager(metaclass=SingletonDBManager):
     def __init__(self):
         self.db_url = ''.join((
