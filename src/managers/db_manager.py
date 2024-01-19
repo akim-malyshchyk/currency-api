@@ -1,3 +1,4 @@
+from asyncio import current_task
 import os
 from contextlib import asynccontextmanager
 from typing import AsyncGenerator
@@ -5,15 +6,13 @@ from typing import AsyncGenerator
 from aiohttp.web import HTTPInternalServerError
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.ext.asyncio import (
-    AsyncSession,
     AsyncEngine,
+    AsyncSession,
+    async_scoped_session,
+    async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.orm import (
-    declarative_base,
-    sessionmaker,
-    scoped_session,
-)
+from sqlalchemy.orm import declarative_base
 from dotenv import load_dotenv
 
 
@@ -70,25 +69,21 @@ class DBManager(metaclass=SingletonDBManager):
             raise HTTPInternalServerError(text="Error creating async engine") from err
 
     async def async_session(self) -> AsyncSession:
-        return scoped_session(sessionmaker(bind=await self.async_engine(),
-                                           class_=AsyncSession,
-                                           expire_on_commit=False,
-                                           autoflush=False,
-                                           autocommit=False))()
+        return async_scoped_session(async_sessionmaker(
+                                        bind=await self.async_engine(),
+                                        expire_on_commit=False,
+                                        autoflush=False,
+                                        autocommit=False),
+                                    scopefunc=current_task)()
 
 
 db_manager = DBManager()
 
 
 @asynccontextmanager
-async def get_async_session():
+async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
     db = await db_manager.async_session()
     try:
         yield db
     finally:
         await db.close()
-
-
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
-    async with get_async_session() as db:
-        yield db
