@@ -15,10 +15,12 @@ The application is connected to PostgreSQL database and is able to write/read st
 One table named `currencies` with PK named `id`, currency as `currency`, timestamp as `date_`, price as `price`.
 
 ## How to run
-### Docker compose way
 1. Rename `.env.template` to `.env`
 2. Paste your KuCoin `API_KEY` and `SECRET_KEY` there
-2. Run the following command:
+3. Pick one of the options below
+
+### Docker compose way
+Run the following command:
 ```bash
 docker-compose up --build
 ```
